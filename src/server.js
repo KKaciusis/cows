@@ -62,21 +62,22 @@ function showInfo() {
         2. Delete a cow
         3. List all cows
         4. Edit cow
-        5. End connection
+        0. End connection
     `);
 }
 
 async function meniu(){
+    conn.connect();
+    console.log("Connected to database");
     showInfo();
     try {
-        SELECT_ACTION = await inputNumber("Choose stuff:  ");
+        SELECT_ACTION = await inputNumber("Choose stuff :  ");
     } catch(err){
         console.log("Please input a number");
     } await main();
 }
 async function addAction(){
 try {
-    conn.connect();
     const cowName = await inputText("Please input name : ");
     const cowNickName = await inputText("Please input nick name :  ");
     const cowMilk = await inputText("please input cow milk production ml/hr :  ");
@@ -86,26 +87,41 @@ try {
     console.log(r);
 } catch (err){
     console.log("error", err);
-} finally {
-    conn.end();
-}
+} 
 }
 async function deleteAction(){
-    
+    try {
+        const id = await inputNumber("Please input id, of item to be deleted :  ")
+        let {results: r, fields: f} = await query(conn, `delete from cow where id = ?`, [id]);
+    }catch(err){
+        console.log("failed to delete");
+    }
 }
 async function listAction() {
     try{
-        conn.connect();
         let {results: r, fields: f} = await query(conn, `select * from cow`);
         console.log(r);
     } catch(err){
         console.log("failed to read info");
     }
 }
+async function editAction(){
+    try{
+    const id = await inputNumber("Choose by id : ")
+    const cowName = await inputText("Edit name : ");
+    const cowNickName = await inputText("Edit nick name :  ");
+    const cowMilk = await inputText("Edit cow milk production ml/hr :  ");
+    let {results: r, fields: f} = await query(conn, ` update cow set name = ?, nickname = ?, milkCount = ? where id = ?`, [cowName, cowNickName, cowMilk, id]);
+    } catch(err){
+        console.log("failed to edit")
+    }
+}
 async function main(){
     if(SELECT_ACTION === ACTION_FINISH){
         console.log("closing");
-        rl.close
+        console.log("disconnected from database")
+        conn.end();
+        rl.close();
     } else {
         if (SELECT_ACTION === ACTION_ADD){
             await addAction();
