@@ -62,8 +62,3 @@ try {
     conn.end();
     rl.close();
 }
-
-
-
-
-conn.end();
