@@ -51,8 +51,9 @@ function query(conn, sql, params){
 try {
     conn.connect();
 
-    const cowName = await inputText("Please input name: ")
-    let {results: r, fields: f} = await query(conn, `select * from cow where name?`, [`%${cowName}%`]);
+    const cowName = await inputText("Please input name: ");
+    const cowNickName = await inputText("Please input nick name:  ");
+    let {results: r, fields: f} = await query(conn, `select * from cow where name like ? and nickname like ?`, [`%${cowName}%`, `%${cowNickName}%`]);
 
     console.log(f);
     console.log(r);
