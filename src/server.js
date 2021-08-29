@@ -1,4 +1,31 @@
-import mysql from 'mysql';
+import readline from "readline";
+import mysql from "mysql";
+
+
+const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+});
+
+function inputText(msg) {
+    return new Promise((resolve) =>{
+        rl.question(msg, (answer)=>{
+            resolve(answer);
+        });
+    });
+}
+function inputNumber(msg){
+    return new Promise ((resolve, reject) =>{
+        rl.question(msg, (answer) => {
+            const num = parseFloat(answer);
+            if (!isNaN(num) && Number.isFinite(num)){
+                resolve(num);
+            }else {
+                reject(new Error(`${answer} is not a number`));
+            }
+        });
+    });
+}
 
 const conn = mysql.createConnection({
     host: "localhost",
@@ -21,12 +48,21 @@ function query(conn, sql, params){
     });
 }
 
-conn.connect();
-console.log("connected")
-let {results: r, fields: f} = await query(conn, "select * from cow where name='Marge'");
+try {
+    conn.connect();
 
-console.log(f);
-console.log(r);
+    const cowName = await inputText("Please input name: ")
+    let {results: r, fields: f} = await query(conn, `select * from cow where name='${cowName}'`);
+
+    console.log(f);
+    console.log(r);
+} catch (err){
+    console.log("error", err);
+} finally {
+    conn.end();
+    rl.close();
+}
+
 
 
 
