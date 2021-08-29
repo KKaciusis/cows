@@ -52,7 +52,7 @@ try {
     conn.connect();
 
     const cowName = await inputText("Please input name: ")
-    let {results: r, fields: f} = await query(conn, `select * from cow where name='${cowName}'`);
+    let {results: r, fields: f} = await query(conn, `select * from cow where name?`, [`%${cowName}%`]);
 
     console.log(f);
     console.log(r);
