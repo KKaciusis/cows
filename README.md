@@ -4,5 +4,5 @@
 
 ### Cow list data base :
 * node.js connection with mySQL database.
-* terminal meniu creadion.
-* mySQL database editing through throught terminal.
+* terminal meniu creation.
+* mySQL database editing through terminal.
